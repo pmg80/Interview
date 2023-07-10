@@ -20,7 +20,7 @@ namespace Interview.Controllers
             return _context.People.ToList();
         }
         [HttpGet("{id}")]
-        public ActionResult<Person> GetPersonById(int id)
+        public ActionResult<Person> GetById(int id)
         {
             var person = _context.People.FirstOrDefault(x => x.Id == id);
             if (person == null)
