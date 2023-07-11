@@ -1,7 +1,9 @@
 ﻿using Interview.Data;
 using Interview.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 
 namespace Interview.Controllers
 {
@@ -14,12 +16,12 @@ namespace Interview.Controllers
         {
             _context = context;
         }
-        [HttpGet]
+        [HttpGet , Authorize(Roles = "3")]
         public ActionResult<IEnumerable<Person>> GetAll()
         {
             return _context.People.ToList();
         }
-        [HttpGet("{id}")]
+        [HttpGet("{id}"), Authorize(Roles = "3")]
         public ActionResult<Person> GetById(int id)
         {
             var person = _context.People.FirstOrDefault(x => x.Id == id);
@@ -29,7 +31,7 @@ namespace Interview.Controllers
             }
             return person;
         }
-        [HttpPost]
+        [HttpPost , Authorize(Roles = "1")]
         public ActionResult<Person> AddPerson(string fName, string lName ,string nCode, long phoneNumber , string email )
         {
             Person person = new Person
@@ -45,7 +47,7 @@ namespace Interview.Controllers
             _context.SaveChanges();
             return person;
         }
-        [HttpDelete]
+        [HttpDelete , Authorize(Roles = "1")]
         public ActionResult DeletePerson(int id)
         {
             var person = _context.People.FirstOrDefault(x => x.Id == id);
@@ -56,7 +58,7 @@ namespace Interview.Controllers
                 _context.People.Remove(person);
             return Ok("Person Removed");
         }
-        [HttpPut]
+        [HttpPut , Authorize(Roles = "2")]
         public ActionResult<Person> UpdatePerson(int id , string fName , string lName, string nCode, long phoneNumber, string email)
         {
             var person = _context.People.FirstOrDefault(x => x.Id == id);

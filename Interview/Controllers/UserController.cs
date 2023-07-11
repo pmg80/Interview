@@ -1,6 +1,7 @@
 ﻿using Interview.Data;
 using Interview.Models;
 using Interview.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,16 +27,17 @@ namespace Interview.Controllers
             else if (user.Password == password)
             {
                 string token = _tokenService.CreateToken(user);
-                return Ok("token");
+                return Ok(token);
             }
             return BadRequest("wrong password");
         }
-        [HttpGet]
+        [HttpGet , Authorize(Roles ="3")]
         public ActionResult<IEnumerable<User>> GetAll()
         {
             return _context.Users.ToList();
         }
-        [HttpGet("{id}")]
+        [Authorize]
+        [HttpGet("{id}") , Authorize(Roles = "3")]
         public ActionResult<User> GetById(int id)
         {
             var user = _context.Users.FirstOrDefault(x => x.Id == id);
@@ -45,7 +47,7 @@ namespace Interview.Controllers
             }
             return user;
         }
-        [HttpPost]
+        [HttpPost , Authorize(Roles = "1")]
         public ActionResult<User> AddUser(string userName, string password, int roleId, int personId)
         {
             
@@ -65,7 +67,7 @@ namespace Interview.Controllers
             _context.SaveChanges();
             return user;
         }
-        [HttpDelete]
+        [HttpDelete, Authorize(Roles = "1")]
         public ActionResult DeleteUser(int id)
         {
             var user = _context.Users.FirstOrDefault(x => x.Id == id);
@@ -74,7 +76,7 @@ namespace Interview.Controllers
             _context.SaveChanges();
             return Ok("User Removed");
         }
-        [HttpPut]
+        [HttpPut , Authorize(Roles = "2")]
         public ActionResult<User> UpdatePerson(int id , string userName, string password, int roleId, int personId)
         {
             var user = _context.Users.FirstOrDefault(x => x.Id == id);
