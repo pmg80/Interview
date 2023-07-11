@@ -1,5 +1,6 @@
 ﻿using Interview.Data;
 using Interview.Models;
+using Interview.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,18 +11,25 @@ namespace Interview.Controllers
     public class UserController : ControllerBase
     {
         public readonly TaskManagerContext _context;
-        public UserController(TaskManagerContext context)
+        public readonly ITokenService _tokenService;
+
+        public UserController(TaskManagerContext context , ITokenService tokenService)
         {
             _context = context;
+            _tokenService = tokenService;
         }
-        /*[HttpPost]
+       [HttpPost("login")]
         public ActionResult Login(string userName, string password)
         {
             var user = _context.Users.FirstOrDefault(u => u.UserName == userName);
             if (user == null) return BadRequest("user not found");
-            if (user.Password == password) return Ok(" ");
+            else if (user.Password == password)
+            {
+                string token = _tokenService.CreateToken(user);
+                return Ok("token");
+            }
             return BadRequest("wrong password");
-        }*/
+        }
         [HttpGet]
         public ActionResult<IEnumerable<User>> GetAll()
         {
